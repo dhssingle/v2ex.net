@@ -1,12 +1,15 @@
-namespace V2ex
+namespace V2ex;
+
+public class Response
 {
-#nullable disable
-    public class Response<T> where T : class
-    {
-        public bool Success { get; set; }
+    public bool Success { get; set; }
 
-        public string Message { get; set; }
+    public string Message { get; set; } = default!;
 
-        public T Result { get; set; }
-    }
 }
+
+public class Response<T> : Response
+{
+    public T Result { get; set; } = default!;
+}
+
