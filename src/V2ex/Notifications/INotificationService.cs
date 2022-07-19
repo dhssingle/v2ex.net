@@ -2,7 +2,7 @@ namespace V2ex.Notifications;
 
 public interface INotificationService
 {
-    Task<Response<NotificationResponse>?> GetNotificationsAsync(int p);
+    Task<Response<NotificationResponse>?> GetAsync(int p);
 
-    Task DeletetNotificationsAsync(int id);
+    Task DeleteAsync(int id);
 }

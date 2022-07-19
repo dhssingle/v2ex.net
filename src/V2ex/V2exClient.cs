@@ -1,23 +1,28 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
-namespace V2ex
+namespace V2ex;
+
+public class V2exClient : IV2exClient
 {
-    public class V2exClient : IV2exClient
+    protected HttpClient Client { get; }
+
+    public V2exClient(HttpClient client)
     {
-        protected HttpClient Client { get; }
+        Client = client;
+    }
 
-        public V2exClient(HttpClient client)
+    public async Task<Response<T>?> SendAsync<T>(HttpRequestMessage requestMessage)
+    {
+        var responseMessage = await Client.SendAsync(requestMessage);
+
+        var resultJson = await responseMessage.Content.ReadAsStringAsync();
+
+        return JsonSerializer.Deserialize<Response<T>>(resultJson, new JsonSerializerOptions(JsonSerializerDefaults.Web)
         {
-            Client = client;
-        }
-
-        public async Task<TResponse?> SendAsync<TResponse>(HttpRequestMessage requestMessage)
-        {
-            var responseMessage = await Client.SendAsync(requestMessage);
-
-            var resultJson = await responseMessage.Content.ReadAsStringAsync();
-
-            return JsonSerializer.Deserialize<TResponse>(resultJson, new JsonSerializerOptions(JsonSerializerDefaults.Web));
-        }
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            
+        });
     }
 }
+

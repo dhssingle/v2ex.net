@@ -20,8 +20,8 @@ namespace V2ex.Extensions
                     })
                     .AddHttpMessageHandler<AuthHeaderHandler>();
 
-            services.AddTransient<INotificationService, NotificationService>();
             services.AddTransient<IAuthTokenStore, AuthTokenStore>();
+            services.AddTransient<INotificationService, NotificationService>();
 
             return services;
         }
