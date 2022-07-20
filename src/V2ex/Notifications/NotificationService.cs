@@ -9,11 +9,11 @@ public class NotificationService : INotificationService
         V2exClient = v2exClient;
     }
 
-    public async Task<Response<NotificationResponse>?> GetAsync(int p)
+    public async Task<NotificationsResponse?> GetListAsync(int p)
     {
         var path = $"api/v2/notifications?p={p}";
 
-        return await V2exClient.SendAsync<NotificationResponse>(new HttpRequestMessage(HttpMethod.Get, path));
+        return await V2exClient.SendAsync<NotificationsResponse>(new HttpRequestMessage(HttpMethod.Get, path));
     }
 
     public async Task DeleteAsync(int id)

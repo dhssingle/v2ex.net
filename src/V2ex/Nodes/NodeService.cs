@@ -9,7 +9,7 @@ public class NodeService : INodeService
         V2exClient = v2exClient;
     }
 
-    public async Task<Response<NodeResponse>?> GetAsync(string name)
+    public async Task<NodeResponse?> GetAsync(string name)
     {
         var path = $"api/v2/nodes/{name}";
 

@@ -1,7 +1,12 @@
 namespace V2ex.Nodes;
 
 # nullable disable
-public class NodeResponse
+public class NodeResponse : Response
+{
+    public Node Result { get; set; }
+}
+
+public class Node
 {
     public int Id { get; set; }
 

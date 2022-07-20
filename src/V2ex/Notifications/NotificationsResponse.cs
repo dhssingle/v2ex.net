@@ -2,7 +2,12 @@ using System.Text.Json.Serialization;
 
 namespace V2ex.Notifications;
 
-public class NotificationResponse
+public class NotificationsResponse : Response
+{
+    public IReadOnlyList<Notification> Result { get; set; } = default!;
+}
+
+public class Notification
 {
     public int Id { get; set; }
 

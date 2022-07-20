@@ -9,7 +9,7 @@ namespace V2ex.Members
             V2exClient = v2exClient;
         }
 
-        public async Task<Response<ProfileResponse>?> GetAsync()
+        public async Task<ProfileResponse?> GetAsync()
         {
             var path = "api/v2/member";
 

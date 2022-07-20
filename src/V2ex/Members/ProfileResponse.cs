@@ -3,7 +3,12 @@ using System.Text.Json.Serialization;
 namespace V2ex.Members;
 
 # nullable disable
-public class ProfileResponse
+public class ProfileResponse : Response
+{
+    public Profile Result { get; set; }
+}
+
+public class Profile
 {
     public int Id { get; set; }
 
