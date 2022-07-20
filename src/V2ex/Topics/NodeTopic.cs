@@ -2,13 +2,8 @@ using System.Text.Json.Serialization;
 
 namespace V2ex.Topics;
 
-# nullable disable
-public class TopicsResponse : Response
-{
-    public IReadOnlyList<Topic> Result { get; set; }
-}
-
-public class Topic
+#nullable disable
+public class NodeTopic
 {
     public int Id { get; set; }
 

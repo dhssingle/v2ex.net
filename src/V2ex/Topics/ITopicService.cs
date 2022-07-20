@@ -2,5 +2,7 @@ namespace V2ex.Topics;
 
 public interface ITopicService
 {
-    Task<TopicsResponse?> GetListAsync(string nodeName,int p);
+    Task<NodeTopicsResponse?> GetNodeTopicsAsync(string nodeName,int p);
+
+    Task<TopicDetailResponse?> GetAsync(int id);
 }
