@@ -24,7 +24,7 @@ namespace V2ex.Extensions
                     })
                     .AddHttpMessageHandler<AuthHeaderHandler>();
 
-            services.AddSingleton<IAuthTokenStore, AuthTokenStore>();
+            services.AddScoped<IAuthTokenStore, AuthTokenStore>();
             services.AddTransient<INotificationService, NotificationService>();
             services.AddTransient<IMemberService, MemberService>();
             services.AddTransient<INodeService, NodeService>();
