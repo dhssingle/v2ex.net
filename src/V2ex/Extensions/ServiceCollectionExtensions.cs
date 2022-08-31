@@ -1,5 +1,9 @@
 using Microsoft.Extensions.DependencyInjection;
+using V2ex.Members;
+using V2ex.Nodes;
 using V2ex.Notifications;
+using V2ex.Tokens;
+using V2ex.Topics;
 
 namespace V2ex.Extensions
 {
@@ -20,8 +24,12 @@ namespace V2ex.Extensions
                     })
                     .AddHttpMessageHandler<AuthHeaderHandler>();
 
-            services.AddTransient<IAuthTokenStore, AuthTokenStore>();
+            services.AddSingleton<IAuthTokenStore, AuthTokenStore>();
             services.AddTransient<INotificationService, NotificationService>();
+            services.AddTransient<IMemberService, MemberService>();
+            services.AddTransient<INodeService, NodeService>();
+            services.AddTransient<ITopicService, TopicService>();
+            services.AddTransient<ITokenService, TokenService>();
 
             return services;
         }
