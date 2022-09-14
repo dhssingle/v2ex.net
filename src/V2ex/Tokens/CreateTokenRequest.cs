@@ -1,11 +1,9 @@
-using System;
+namespace V2ex.Tokens;
 
-namespace V2ex.Tokens
+public class CreateTokenRequest
 {
-    public class CreateTokenRequest
-    {
-        public string Scope { get; set; } = default!;
+    public string Scope { get; set; } = default!;
 
-        public int Expiration { get; set; }
-    }
+    public int Expiration { get; set; }
 }
+

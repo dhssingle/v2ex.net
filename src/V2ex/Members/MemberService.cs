@@ -1,19 +1,19 @@
-namespace V2ex.Members
+namespace V2ex.Members;
+
+public class MemberService : IMemberService
 {
-    public class MemberService : IMemberService
+    protected IV2exClient V2exClient { get; }
+
+    public MemberService(IV2exClient v2exClient)
     {
-        protected IV2exClient V2exClient { get; }
+        V2exClient = v2exClient;
+    }
 
-        public MemberService(IV2exClient v2exClient)
-        {
-            V2exClient = v2exClient;
-        }
+    public async Task<ProfileResponse?> GetAsync()
+    {
+        var path = "api/v2/member";
 
-        public async Task<ProfileResponse?> GetAsync()
-        {
-            var path = "api/v2/member";
-
-            return await V2exClient.SendAsync<ProfileResponse>(new HttpRequestMessage(HttpMethod.Get, path));
-        }
+        return await V2exClient.SendAsync<ProfileResponse>(new HttpRequestMessage(HttpMethod.Get, path));
     }
 }
+

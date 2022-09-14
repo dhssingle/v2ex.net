@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Caching.Distributed;
 using System.Text.Json;
 using System.Net.Http.Headers;
+using V2ex.Tokens;
 
 namespace V2ex;
 
@@ -10,10 +11,13 @@ public class AuthTokenStore : IAuthTokenStore
     private readonly IDistributedCache _distributedCache;
     private readonly IHttpClientFactory _httpClientFactory;
 
-    public AuthTokenStore(IDistributedCache distributedCache, IHttpClientFactory httpClientFactory)
+    private readonly ITokenService _tokenService;
+
+    public AuthTokenStore(IDistributedCache distributedCache, IHttpClientFactory httpClientFactory, ITokenService tokenService)
     {
         _distributedCache = distributedCache;
         _httpClientFactory = httpClientFactory;
+        _tokenService = tokenService;
     }
 
     public async Task<TokenCacheItem?> GetTokenAsync()
@@ -22,7 +26,7 @@ public class AuthTokenStore : IAuthTokenStore
 
         if (cache is null)
         {
-            throw new NullReferenceException("无法获取到 Token");
+            throw new NullReferenceException("token 无效");
         }
 
         return JsonSerializer.Deserialize<TokenCacheItem>(cache);
@@ -34,7 +38,7 @@ public class AuthTokenStore : IAuthTokenStore
 
         if (tokenCacheItem is null)
         {
-            throw new NullReferenceException("无法获取到 Token");
+            throw new NullReferenceException("token 无效");
         }
 
         await _distributedCache.SetStringAsync(key, tokenCacheItem.Token, new DistributedCacheEntryOptions
