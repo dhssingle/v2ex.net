@@ -5,6 +5,16 @@ namespace V2ex.Tokens;
 public class GetTokenResponse : Response
 {
     public TokenInfo? Result { get; set; }
+
+    public long GetAbsoluteExpiration()
+    {
+        return Result!.Created + Result!.Expiration;
+    }
+
+    public string GetToken()
+    {
+        return Result!.Token;
+    }
 }
 
 public class TokenInfo

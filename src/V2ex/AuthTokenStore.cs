@@ -1,6 +1,4 @@
 using Microsoft.Extensions.Caching.Distributed;
-using System.Text.Json;
-using System.Net.Http.Headers;
 using V2ex.Tokens;
 
 namespace V2ex;
@@ -9,55 +7,54 @@ public class AuthTokenStore : IAuthTokenStore
 {
     private const string key = "V2ex:PersonalAccessToken";
     private readonly IDistributedCache _distributedCache;
-    private readonly IHttpClientFactory _httpClientFactory;
-
     private readonly ITokenService _tokenService;
 
-    public AuthTokenStore(IDistributedCache distributedCache, IHttpClientFactory httpClientFactory, ITokenService tokenService)
+    public AuthTokenStore(IDistributedCache distributedCache, ITokenService tokenService)
     {
         _distributedCache = distributedCache;
-        _httpClientFactory = httpClientFactory;
         _tokenService = tokenService;
     }
 
-    public async Task<TokenCacheItem?> GetTokenAsync()
+    public async Task<string> GetTokenAsync()
     {
-        var cache = await _distributedCache.GetStringAsync(key);
+        var cacheToken = await _distributedCache.GetStringAsync(key);
 
-        if (cache is null)
+        if (cacheToken is null)
         {
             throw new NullReferenceException("token 无效");
         }
 
-        return JsonSerializer.Deserialize<TokenCacheItem>(cache);
+        return cacheToken;
     }
 
     public async Task SetTokenAsync(string token)
     {
-        var tokenCacheItem = await GetTokenAsync(token);
+        await SetCacheAsync(token, DateTimeOffset.Now.ToUnixTimeMilliseconds() + 5);
 
-        if (tokenCacheItem is null)
-        {
-            throw new NullReferenceException("token 无效");
-        }
-
-        await _distributedCache.SetStringAsync(key, tokenCacheItem.Token, new DistributedCacheEntryOptions
-        {
-            AbsoluteExpiration = DateTimeOffset.FromUnixTimeSeconds(tokenCacheItem.Created + tokenCacheItem.Expiration)
-        });
+        await ValidateTokenAsync();
     }
 
-    private async Task<TokenCacheItem?> GetTokenAsync(string token)
+
+    private async Task ValidateTokenAsync()
     {
-        var client = _httpClientFactory.CreateClient();
+        var response = await _tokenService.GetAsync();
 
-        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        if (!response!.Success)
+        {
+            throw new HttpRequestException(response.Message);
+        }
 
-        var resultStream = await client.GetStreamAsync("api/v2/token");
+        await SetCacheAsync(response.GetToken(), response.GetAbsoluteExpiration());
+    }
 
-        var document = await JsonDocument.ParseAsync(resultStream);
+    private async Task SetCacheAsync(string token, long expiration)
+    {
+        await _distributedCache.RemoveAsync(key);
 
-        return document.RootElement.GetProperty("result").Deserialize<TokenCacheItem>();
+        await _distributedCache.SetStringAsync(key, token, new DistributedCacheEntryOptions
+        {
+            AbsoluteExpiration = DateTimeOffset.FromUnixTimeSeconds(expiration)
+        });
     }
 }
 

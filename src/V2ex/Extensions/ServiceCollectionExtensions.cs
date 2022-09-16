@@ -17,12 +17,13 @@ public static class ServiceCollectionExtensions
         }
 
         services.AddDistributedMemoryCache();
+        services.AddTransient<AuthenticatedHttpClientHandler>();
         services.AddHttpClient<IV2exClient, V2exClient>()
                 .ConfigureHttpClient(c =>
                 {
                     c.BaseAddress = new Uri(" https://www.v2ex.com/");
                 })
-                .AddHttpMessageHandler<AuthHeaderHandler>();
+                .AddHttpMessageHandler<AuthenticatedHttpClientHandler>();
 
         services.AddScoped<IAuthTokenStore, AuthTokenStore>();
         services.AddTransient<INotificationService, NotificationService>();
